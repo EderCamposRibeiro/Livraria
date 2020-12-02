@@ -27,14 +27,6 @@ public class AutorBean implements Serializable {
 		this.autorId = autorId;
 	}
 
-	public Autor getAutor() {
-		return autor;
-	}
-	
-	public List<Autor> getAutores() {
-		return new DAO<Autor>(Autor.class).listaTodos();
-	}
-	
 	public void carregarAutorPelaId() {
 		this.autor = new DAO<Autor>(Autor.class).buscaPorId(autorId);
 	}
@@ -49,15 +41,23 @@ public class AutorBean implements Serializable {
 		return "livro?faces-redirect=true";
 	}
 
-	public void carregar(Autor autor) {
-		System.out.println("Carregando autor");
-		this.autor = autor;
-	}
-
 	public void remover(Autor autor) {
 
 		System.out.println("Removendo Autor " + autor.getNome());
 		new DAO<Autor>(Autor.class).remove(autor);
 
 	}
+
+	public List<Autor> getAutores() {
+		return new DAO<Autor>(Autor.class).listaTodos();
+	}
+		
+	
+	public Autor getAutor() {
+		return autor;
+	}
+	
+	public void setAutor(Autor autor) {
+		this.autor = autor;
+	}	
 }

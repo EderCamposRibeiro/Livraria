@@ -3,6 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
 	xmlns:h="http://xmlns.jcp.org/jsf/html"
 	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
 	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
 	xmlns:jsf="http://xmlns.jcp.org/jsf">
 
@@ -10,57 +11,64 @@
 
 	<f:metadata>
 		<f:viewParam name="autorId" value="#{autorBean.autorId}" />
-		<f:viewAction action="#{autorBean.carregarAutorPelaId}" if="#{param.autorId != null}"/>
+		<f:viewAction action="#{autorBean.carregarAutorPelaId}"
+			if="#{param.autorId != null}" />
 	</f:metadata>
 	<ui:define name="titulo">
-		Novo Autor
+		<p:outputPanel>Novo Autor</p:outputPanel>
 	</ui:define>
 	<ui:define name="conteudo">
-		<h:form>
-			<h:messages style="color:red;" />
-			<fieldset>
-				<legend>Dados do Autor</legend>
+		<h:form id="autor">
+			<p:messages style="color:red;" />
+			<p:fieldset legend="Dados do Autor">
 				<h:panelGrid columns="3">
-				
-					<h:outputLabel value="Nome:" for="nome" />
-					<h:inputText id="nome" value="#{autorBean.autor.nome}"
+
+					<p:outputLabel value="Nome:" for="nome" />
+					<p:inputText id="nome" value="#{autorBean.autor.nome}"
 						required="true"
 						validatorMessage="Quantidade de caracteres não pode ser inferior a 5!">
 						<f:validateLength minimum="5" />
-					</h:inputText>
-					<h:message for="nome" id="messageNome" style="color:red;" />
+						<f:ajax event="blur" render="messageNome" />
+					</p:inputText>
+					<p:message for="nome" id="messageNome" style="color:red;" />
 
-					<h:outputLabel value="Email:" for="email" />
- 					<h:inputText id="email" value="#{autorBean.autor.email}" required="true">
-					    <f:passThroughAttribute name="type" value="email"></f:passThroughAttribute>
-					</h:inputText>				
-					<h:message for="email" id="messageEmail" style="color:red;" />
-					
-					<h:commandButton value="Gravar" action="#{autorBean.gravar}" />
+					<p:outputLabel value="Email:" for="email" />
+					<p:inputText id="email" value="#{autorBean.autor.email}"
+						required="true"
+						validatorMessage="Email inválido! Deve conter '@'.">
+						<f:attribute name="type" value="email" />
+						<f:passThroughAttribute name="placeholder" value="Email do autor" />
+						<f:validateRegex pattern=".+@.+" />
+						<f:ajax event="blur" render="messageEmail" />
+					</p:inputText>
+					<p:message for="email" id="messageEmail" style="color:red;" />
+
+					<p:commandButton value="Gravar" action="#{autorBean.gravar}"
+						process="@form" update="@form :formTabelaAutores" />
 				</h:panelGrid>
-			</fieldset>
+			</p:fieldset>
 		</h:form>
 		<h:form id="formTabelaAutores">
-			<h:dataTable id="tabelaAutores" value="#{autorBean.autores}"
-				var="autor">
-				<h:column>
-					<f:facet name="header">Nome</f:facet>
-					<h:outputText value="#{autor.nome}" />
-				</h:column>
-				<h:column>
-					<f:facet name="header">Alterar</f:facet>
-					<h:commandLink value="altera" action="#{autorBean.carregar(autor)}" />
-				</h:column>
-				<h:column>
-					<f:facet name="header">Remover</f:facet>
-					<h:commandLink value="remove" action="#{autorBean.remover(autor)}" />
-				</h:column>
-			</h:dataTable>
+
+			<p:dataList value="#{autorBean.autores}" var="autor" type="definition">
+				<f:facet name="header">
+            		Autores
+        		</f:facet>
+        		<p:commandLink styleClass="ui-icon ui-icon-pencil" style="float:left;margin-right:10px" 
+        			update=":autor">
+        			<f:setPropertyActionListener value="#{autor}" target="#{autorBean.autor}" />
+        		</p:commandLink>
+        		
+        		<p:commandLink styleClass="ui-icon ui-icon-trash" style="float:left;margin-right:10px" 
+        					action="#{autorBean.remover(autor)}" update="formTabelaAutores"/>	        		
+        			#{autor.nome} - #{autor.email}
+
+    		</p:dataList>
 		</h:form>
 	</ui:define>
 	<ui:define name="rodape">
-		Cadastro de Autores
+		<p:outputPanel>Cadastro de Autores</p:outputPanel>
 	</ui:define>
 </ui:composition>
-   <!--<input jsf:type="email" jsf:id="email" jsf:value="#{autorBean.autor.email}" />-->
+<!--<input jsf:type="email" jsf:id="email" jsf:value="#{autorBean.autor.email}" />-->
 </html>
