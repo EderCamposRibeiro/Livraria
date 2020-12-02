@@ -3,6 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
 	xmlns:h="http://xmlns.jcp.org/jsf/html"
 	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
 	xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
 
 <ui:composition template="_template.xhtml">
@@ -12,40 +13,32 @@
 	</ui:define>
 	<ui:define name="conteudo" >
 	
-		<h:messages globalOnly="true" style="color:red;"/>
+		<p:messages globalOnly="true" style="color:red;"/>
 		
 		<h:form id="login">
-			<fieldset>
-				<legend>Faça seu login:</legend>
+			<p:fieldset legend="Faça seu login:">
 				<h:panelGrid columns="3">
 
-					<h:outputLabel value="Email:" for="email" />
-					<h:inputText id="email" value="#{loginBean.usuario.email}"
+					<p:outputLabel value="Email:" for="email" />
+					<p:inputText id="email" value="#{loginBean.usuario.email}"
 						required="true">
 						<f:passThroughAttribute name="type" value="email" />
-					</h:inputText>
-					<h:message for="email" id="messageEmail" style="color:red;" />
+					</p:inputText>
+					<p:message for="email" id="messageEmail" style="color:red;" />
 
-					<h:outputLabel value="Senha:" for="senha" />
- 					<h:inputText id="senha" value="#{loginBean.usuario.senha}"
-						required="true">
-						<f:passThroughAttribute name="type" value="password" />
-					</h:inputText>
+					<p:outputLabel value="Senha:" for="senha" />
+					<p:password id="senha" value="#{loginBean.usuario.senha}" feedback="true" required="true"/>
 					
-					<h:message for="senha" id="messageSenha" style="color:red;" />
+					<p:message for="senha" id="messageSenha" style="color:red;" />
 
-					<h:commandButton value="Logar" action="#{loginBean.efetuaLogin}" />
+					<p:commandButton value="Logar" action="#{loginBean.efetuaLogin}" update="@form" process="@form" />
 				</h:panelGrid>
-			</fieldset>
+			</p:fieldset>
 		</h:form>
 	</ui:define>
 	<ui:define name="rodape">
 		Use seu usuário(Email) e senha para ter acesso ao sistema!
 	</ui:define>
 </ui:composition>
-<!-- 					
-					<h:inputSecret id="senha" value="#{loginBean.usuario.senha}"
-					required="true"/>
- -->	
 
 </html>
