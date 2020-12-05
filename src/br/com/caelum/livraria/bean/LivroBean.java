@@ -21,17 +21,10 @@ public class LivroBean implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	private Livro livro = new Livro();
+
 	private Integer autorid;
 
-	private Integer livroId;
-
-	public Integer getLivroId() {
-		return livroId;
-	}
-
-	public void setLivroId(Integer livroId) {
-		this.livroId = livroId;
-	}
+	private List<Livro> livros;
 
 	public void setAutorid(Integer autorid) {
 		this.autorid = autorid;
@@ -46,7 +39,12 @@ public class LivroBean implements Serializable {
 	}
 
 	public List<Livro> getLivros() {
-		return new DAO<Livro>(Livro.class).listaTodos();
+		DAO<Livro> dao = new DAO<Livro>(Livro.class);
+		if (this.livros == null) {
+			this.livros = dao.listaTodos();
+		}
+		
+		return livros;
 	}
 
 	public List<Autor> getAutores() {
@@ -58,7 +56,7 @@ public class LivroBean implements Serializable {
 	}
 	
     public void carregarLivroPelaId() {
-        this.livro = new DAO<Livro>(Livro.class).buscaPorId(this.livroId);
+        this.livro = new DAO<Livro>(Livro.class).buscaPorId(this.livro.getId());
     }	
 
 	public void gravarAutor() {
@@ -75,20 +73,17 @@ public class LivroBean implements Serializable {
 			FacesContext.getCurrentInstance().addMessage("autor",
 					new FacesMessage("Livro deve ter pelo menos um Autor!"));
 			return;
+		}	
+		DAO<Livro> dao = new DAO<Livro>(Livro.class);
+
+		if (this.livro.getId() == null) {
+			dao.adiciona(this.livro);
+			/* Novo livro adicionado, listamos todos os livros novamente*/
+			this.livros = dao.listaTodos();
 		} else {
-			if (this.livro.getId() == null) {
-				new DAO<Livro>(Livro.class).adiciona(this.livro);
-			} else {
-				new DAO<Livro>(Livro.class).atualiza(this.livro);
-			}
-			this.livro = new Livro();
+			dao.atualiza(this.livro);
 		}
-
-	}
-
-	public void carregar(Livro livro) {
-		System.out.println("Carrega Livro");
-		this.livro = livro;
+		this.livro = new Livro();
 	}
 
 	public void remover(Livro livro) {
@@ -101,6 +96,11 @@ public class LivroBean implements Serializable {
 		System.out.println("Removendo Autor do Livro");
 		this.livro.removeAutor(autor);
 	}
+	
+	public void carregar(Livro livro) {
+		System.out.println("Carrega Livro");
+		this.livro = livro;
+	}	
 
 	public String formAutor() {
 		System.out.println("Chamada do formulário do Autor!");
@@ -113,5 +113,4 @@ public class LivroBean implements Serializable {
 			throw new ValidatorException(new FacesMessage("ISBN Deveria começar com 1!"));
 		}
 	}
-
 }
